@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatbotTry</title>
+  <style>
+    #chat-container {
+      height: 400px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chatbot</h1>
+  <div id="chat-container"></div>
+  <form id="chat-form">
+    <input type="text" id="user-input" placeholder="Type your message..." required>
+    <button type="submit">Send</button>
+  </form>
+
+ 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $('#chat-form').submit(function(event) {
+      event.preventDefault();
+      var userInput = $('#user-input').val();
+
+      $('#chat-container').append('<p><strong>You:</strong> ' + userInput + '</p>');
+      $('#user-input').val('');
+
+      $.ajax({
+        url: '/api/chat',
+        type: 'POST',
+        dataType: 'json',
+        data: JSON.stringify({ input: userInput }),
+        contentType: 'application/json',
+        success: function(response) {
+          
+          $('#chat-container').append('<p><strong>Chatbot:</strong> ' + response.output + '</p>');
+          
+          $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
+        },
+        error: function(xhr, status, error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
